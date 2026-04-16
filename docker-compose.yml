@@ -1,10 +1,6 @@
 services:
   app:
-    build:
-      context: ../money-manager-ai
-      args:
-        GPR_USER: ${GPR_USER}
-        GPR_KEY: ${GPR_KEY}
+    image: ghcr.io/amirkenesbay/money-manager-ai:latest
     container_name: money-manager-ai
     restart: always
     env_file: .env
