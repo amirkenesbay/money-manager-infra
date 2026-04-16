@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: ../money-manager-ai
+      args:
+        GPR_USER: ${GPR_USER}
+        GPR_KEY: ${GPR_KEY}
+    container_name: money-manager-ai
+    restart: always
+    env_file: .env
+    environment:
+      MONGO_HOST: mongo
+      SPRING_MONGODB_PORT: 27017
+      CHAT_MACHINIST_VISUALIZE: "false"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:8.0
+    container_name: money-manager-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - ./volumes/mongo/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
