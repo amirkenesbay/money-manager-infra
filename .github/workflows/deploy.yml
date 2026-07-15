@@ -39,4 +39,12 @@ jobs:
           docker compose pull app
           docker compose up -d app
           docker compose ps
+
+          # notify the alerts chat that the new image is live
+          set -a; . ./.env; set +a
+          IMAGE_SHA="$(docker inspect --format '{{.Image}}' money-manager-ai | cut -c8-19)"
+          BUILT_AT="$(docker inspect --format '{{.Created}}' "$(docker inspect --format '{{.Image}}' money-manager-ai)" | cut -c1-16)"
+          curl -fsS -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d chat_id="${ALERT_CHAT_ID}" \
+            -d text="🚀 money-manager-ai deployed — image ${IMAGE_SHA}, built ${BUILT_AT}Z" >/dev/null
           EOF
