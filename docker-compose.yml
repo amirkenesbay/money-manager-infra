@@ -5,6 +5,7 @@ services:
     restart: always
     env_file: .env
     environment:
+      JAVA_TOOL_OPTIONS: "-Xmx1g -XX:+UseSerialGC"
       MONGO_HOST: mongo
       SPRING_MONGODB_PORT: 27017
       CHAT_MACHINIST_VISUALIZE: "false"
@@ -12,12 +13,29 @@ services:
       mongo:
         condition: service_healthy
 
+  web:
+    image: ghcr.io/amirkenesbay/money-manager-webapp:latest
+    container_name: money-manager-web
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - app
+
   mongo:
     image: mongo:8.0
     container_name: money-manager-mongo
     restart: always
+    command: ["--wiredTigerCacheSizeGB", "0.75"]
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     env_file: .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}

@@ -8,6 +8,7 @@ on:
     paths:
       - 'docker-compose.yml'
       - 'volumes/**'
+      - 'nginx/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -36,8 +37,8 @@ jobs:
           set -euo pipefail
           cd /opt/money-manager
           git pull --ff-only
-          docker compose pull app
-          docker compose up -d app
+          docker compose pull app web
+          docker compose up -d app web
           docker compose ps
 
           # notify the alerts chat that the new image is live
