@@ -47,6 +47,7 @@ See `.env.example` for all required variables:
 | `GPR_KEY` | GitHub PAT with `read:packages` scope |
 | `DOMAIN` | Mini App domain, A record must point to the VPS |
 | `CERTBOT_EMAIL` | Let's Encrypt account email (expiry notices) |
+| `TRIBUTE_API_KEY` | Tribute API key: verifies subscription webhooks |
 
 ## Volumes
 
@@ -71,6 +72,14 @@ On failure the backup script sends an alert message to the same chat.
 4. `scripts/install-renew-cron.sh` — renew twice a day via webroot, then reload nginx
 
 Changing the domain: update `DOMAIN`, run `scripts/init-https.sh` again.
+
+## Premium via Tribute
+
+1. Tribute → Settings → API keys: create a key, put it into `.env` as `TRIBUTE_API_KEY`, then `docker compose up -d app`
+2. Tribute → Settings → Webhooks: URL `https://$DOMAIN/api/v1/webhooks/tribute`
+3. New, renewed and cancelled subscriptions switch Premium on until the date Tribute sends; the user and the alerts chat get a message
+
+Manual control from an admin account in the bot: `/activate <user> <days>`, `/whitelist add|remove|list <user>` (Premium forever), `/blacklist add|remove|list <user>` (blocked).
 
 ## Disaster recovery (new VPS from scratch)
 
