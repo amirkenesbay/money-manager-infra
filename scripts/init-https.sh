@@ -12,8 +12,8 @@ docker compose stop web 2>/dev/null || true
 docker run --rm -p 80:80 \
   -v "$PWD/certbot/conf:/etc/letsencrypt" \
   certbot/certbot certonly --standalone \
-  -d "$DOMAIN" -d "www.$DOMAIN" \
-  ${CERTBOT_EMAIL:+--email "$CERTBOT_EMAIL"} ${CERTBOT_EMAIL:---register-unsafely-without-email} --agree-tos --non-interactive --keep-until-expiring
+  -d "$DOMAIN" -d "www.$DOMAIN" -d "grafana.$DOMAIN" \
+  ${CERTBOT_EMAIL:+--email "$CERTBOT_EMAIL"} ${CERTBOT_EMAIL:---register-unsafely-without-email} --agree-tos --non-interactive --keep-until-expiring --expand
 
 docker compose up -d web
 echo "✅ HTTPS ready: https://$DOMAIN"

@@ -9,6 +9,8 @@ on:
       - 'docker-compose.yml'
       - 'volumes/**'
       - 'nginx/**'
+      - 'prometheus/**'
+      - 'grafana/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -38,7 +40,8 @@ jobs:
           cd /opt/money-manager
           git pull --ff-only
           docker compose pull app web
-          docker compose up -d app web
+          docker compose up -d
+          docker compose restart prometheus grafana
           docker compose ps
 
           # notify the alerts chat that the new image is live

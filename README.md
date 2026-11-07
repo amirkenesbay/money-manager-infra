@@ -48,6 +48,7 @@ See `.env.example` for all required variables:
 | `DOMAIN` | Mini App domain, A record must point to the VPS |
 | `CERTBOT_EMAIL` | Let's Encrypt account email (expiry notices) |
 | `TRIBUTE_API_KEY` | Tribute API key: verifies subscription webhooks |
+| `GRAFANA_ADMIN_PASSWORD` | Password of the `admin` user in Grafana |
 
 ## Volumes
 
@@ -80,6 +81,17 @@ Changing the domain: update `DOMAIN`, run `scripts/init-https.sh` again.
 3. New, renewed and cancelled subscriptions switch Premium on until the date Tribute sends; the user and the alerts chat get a message
 
 Manual control from an admin account in the bot: `/activate <user> <days>`, `/whitelist add|remove|list <user>` (Premium forever), `/blacklist add|remove|list <user>` (blocked).
+
+## Monitoring
+
+Prometheus (30 days, 2 GB max), Grafana and node-exporter run next to the app. The app exposes metrics on the internal port 8081 (`/actuator/prometheus`), which is not published outside Docker.
+
+1. A record `grafana.$DOMAIN` → VPS IP
+2. Set `GRAFANA_ADMIN_PASSWORD` in `.env`
+3. `scripts/init-https.sh` — adds `grafana.$DOMAIN` to the certificate
+4. Open `https://grafana.$DOMAIN`, user `admin`
+
+Dashboards and alert rules live in `grafana/` and are provisioned on start; change them here, not in the UI. Alerts go to `ALERT_CHAT_ID` through the bot.
 
 ## Disaster recovery (new VPS from scratch)
 
