@@ -6,9 +6,9 @@
   ],
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 4,
   "time": {
-    "from": "now-7d",
+    "from": "now-24h",
     "to": "now"
   },
   "refresh": "1m",
@@ -36,11 +36,46 @@
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "Работает",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "Недоступно",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ]
+        },
         "overrides": []
       },
       "options": {
@@ -52,7 +87,7 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "textMode": "auto"
       }
     },
@@ -73,18 +108,31 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(http_server_requests_seconds_count{uri=~\"/api/.*\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{uri=~\"/api/.*\"}[5m])) or vector(0)",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "reqps"
+          "unit": "reqps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
         },
         "overrides": []
       },
@@ -118,18 +166,31 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m])) or vector(0)",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "reqps"
+          "unit": "reqps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
         },
         "overrides": []
       },
@@ -163,18 +224,31 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(jvm_memory_used_bytes{area=\"heap\"})",
+          "expr": "sum(jvm_memory_used_bytes{area=\"heap\"}) or vector(0)",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "bytes"
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
         },
         "overrides": []
       },
@@ -213,7 +287,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{uri}}"
+          "legendFormat": "{{uri}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -246,7 +321,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{status}}"
+          "legendFormat": "{{status}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -279,7 +355,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{call}} · {{outcome}}"
+          "legendFormat": "{{call}} · {{outcome}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -310,7 +387,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{call}}"
+          "legendFormat": "{{call}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -343,7 +421,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{outcome}}"
+          "legendFormat": "{{outcome}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -374,7 +453,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{outcome}}"
+          "legendFormat": "{{outcome}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -405,7 +485,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": ""
+          "legendFormat": "CPU",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -438,7 +519,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": ""
+          "legendFormat": "память",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -471,7 +553,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": ""
+          "legendFormat": "диск",
+          "range": true
         }
       ],
       "fieldConfig": {

@@ -6,9 +6,9 @@
   ],
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 4,
   "time": {
-    "from": "now-7d",
+    "from": "now-24h",
     "to": "now"
   },
   "refresh": "1m",
@@ -36,11 +36,25 @@
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
         "overrides": []
       },
       "options": {
@@ -79,11 +93,25 @@
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
         "overrides": []
       },
       "options": {
@@ -122,11 +150,25 @@
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
         "overrides": []
       },
       "options": {
@@ -165,11 +207,25 @@
             "uid": "prometheus"
           },
           "legendFormat": "",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
         "overrides": []
       },
       "options": {
@@ -207,7 +263,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{window}}"
+          "legendFormat": "{{window}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -238,7 +295,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{source}}"
+          "legendFormat": "{{source}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -269,7 +327,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": ""
+          "legendFormat": "регистрации",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -300,7 +359,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": ""
+          "legendFormat": "активные",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -331,7 +391,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "{{change}} · {{period}}"
+          "legendFormat": "{{change}} · {{period}}",
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -357,18 +418,31 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(moneymanager_subscriptions_revenue_total{currency=\"usd\"}[30d]))",
+          "expr": "sum(increase(moneymanager_subscriptions_revenue_total{currency=\"usd\"}[30d])) or vector(0)",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "legendFormat": "",
-          "instant": false
+          "legendFormat": "выручка",
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "currencyUSD"
+          "unit": "currencyUSD",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
         },
         "overrides": []
       },
@@ -408,11 +482,25 @@
             "uid": "prometheus"
           },
           "legendFormat": "{{access}}",
-          "instant": false
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
         "overrides": []
       },
       "options": {
