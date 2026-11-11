@@ -49,11 +49,13 @@ See `.env.example` for all required variables:
 | `CERTBOT_EMAIL` | Let's Encrypt account email (expiry notices) |
 | `TRIBUTE_API_KEY` | Tribute API key: verifies subscription webhooks |
 | `GRAFANA_ADMIN_PASSWORD` | Password of the `admin` user in Grafana |
+| `MONGO_GRAFANA_PASSWORD` | Password of the read-only `grafanaReader` DB user behind the Users dashboard |
 
 ## Volumes
 
 - `mongo_data` — persistent MongoDB data
 - `./volumes/mongo/mongo-init.sh` — init script, creates app DB user on first start
+- `./volumes/mongo/grafana-reader.js` — creates the read-only `grafanaReader` user (only `find` on `finance_operation` and `money_manager_user`) on first start
 
 ## Backups
 
@@ -92,6 +94,14 @@ Prometheus (30 days, 2 GB max), Grafana and node-exporter run next to the app. T
 4. Open `https://grafana.$DOMAIN`, user `admin`
 
 Dashboards and alert rules live in `grafana/` and are provisioned on start; change them here, not in the UI. Alerts go to `ALERT_CHAT_ID` through the bot.
+
+The Users dashboard reads MongoDB directly through the community plugin `haohanyang-mongodb-datasource` (unsigned, pinned to v0.5.0) as `grafanaReader`. On a server whose Mongo volume already exists, create that user once:
+
+```bash
+echo "MONGO_GRAFANA_PASSWORD=$(openssl rand -hex 24)" >> .env
+docker compose exec -T mongo sh -c 'MONGO_GRAFANA_PASSWORD="$1" mongosh --quiet -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --file /dev/stdin' _ "$(grep ^MONGO_GRAFANA_PASSWORD= .env | cut -d= -f2)" < volumes/mongo/grafana-reader.js
+docker compose up -d grafana
+```
 
 ## Disaster recovery (new VPS from scratch)
 

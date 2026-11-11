@@ -1,0 +1,170 @@
+{
+  "uid": "mm-users",
+  "title": "Money Manager · Пользователи",
+  "tags": [
+    "money-manager"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "refresh": "5m",
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Зарегистрировано",
+      "datasource": {
+        "type": "haohanyang-mongodb-datasource",
+        "uid": "mongo"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "haohanyang-mongodb-datasource",
+            "uid": "mongo"
+          },
+          "collection": "money_manager_user",
+          "queryLanguage": "json",
+          "queryText": "[\n  {\n    \"$count\": \"total\"\n  }\n]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Активных за всё время",
+      "datasource": {
+        "type": "haohanyang-mongodb-datasource",
+        "uid": "mongo"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "haohanyang-mongodb-datasource",
+            "uid": "mongo"
+          },
+          "collection": "finance_operation",
+          "queryLanguage": "json",
+          "queryText": "[\n  {\n    \"$group\": {\n      \"_id\": \"$creatorId\"\n    }\n  },\n  {\n    \"$count\": \"total\"\n  }\n]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      }
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Активные пользователи",
+      "description": "Записали хотя бы одну операцию. Сверху — кто записывал недавно.",
+      "datasource": {
+        "type": "haohanyang-mongodb-datasource",
+        "uid": "mongo"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 18
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "haohanyang-mongodb-datasource",
+            "uid": "mongo"
+          },
+          "collection": "finance_operation",
+          "queryLanguage": "json",
+          "queryText": "[\n  {\n    \"$group\": {\n      \"_id\": \"$creatorId\",\n      \"ops\": {\n        \"$sum\": 1\n      },\n      \"first\": {\n        \"$min\": \"$auditInfo.createdAt\"\n      },\n      \"last\": {\n        \"$max\": \"$auditInfo.createdAt\"\n      }\n    }\n  },\n  {\n    \"$lookup\": {\n      \"from\": \"money_manager_user\",\n      \"localField\": \"_id\",\n      \"foreignField\": \"telegramUserId\",\n      \"as\": \"u\"\n    }\n  },\n  {\n    \"$sort\": {\n      \"last\": -1\n    }\n  },\n  {\n    \"$project\": {\n      \"_id\": 0,\n      \"Пользователь\": {\n        \"$ifNull\": [\n          {\n            \"$concat\": [\n              \"@\",\n              {\n                \"$arrayElemAt\": [\n                  \"$u.username\",\n                  0\n                ]\n              }\n            ]\n          },\n          {\n            \"$ifNull\": [\n              {\n                \"$arrayElemAt\": [\n                  \"$u.firstName\",\n                  0\n                ]\n              },\n              \"—\"\n            ]\n          }\n        ]\n      },\n      \"Telegram id\": {\n        \"$toString\": \"$_id\"\n      },\n      \"Операций\": \"$ops\",\n      \"Первая операция\": \"$first\",\n      \"Последняя операция\": \"$last\"\n    }\n  }\n]"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "sortBy": []
+      }
+    }
+  ]
+}

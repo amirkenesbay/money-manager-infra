@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: MongoDB
+    uid: mongo
+    type: haohanyang-mongodb-datasource
+    access: proxy
+    editable: false
+    jsonData:
+      host: mongo:27017
+      database: moneyManagerBot
+      authType: username-password
+      username: grafanaReader
+      authDb: moneyManagerBot
+    secureJsonData:
+      password: ${MONGO_GRAFANA_PASSWORD}
